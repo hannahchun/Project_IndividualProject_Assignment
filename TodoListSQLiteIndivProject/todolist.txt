@@ -1,0 +1,10 @@
+Assignment##Week3Assignment##Os, Algorithm Assignment##2021/09/21##2021/09/26 03:22:51
+Meeting##PlayClub##Weekly practice##2021/09/22##2021/09/26 03:23:24
+Hobby##Violin##Sarasate: Zigeunerweisen, Op.##2021/09/24##2021/09/26 03:23:51
+Workout##Tennis##play tennis for 1 hour in the afternoon##2021/09/17##2021/09/26 03:24:26
+Assignment##Week4Assignment##DB, Capstone Assignment##2021/09/27##2021/09/26 03:24:53
+Test##Final##C programming##2021/10/09##2021/09/26 03:25:15
+Hobby##Fishing##Once in a month##2021/10/20##2021/09/26 03:25:45
+Meeting##ISEL##Defect prediction##2021/11/08##2021/09/26 03:26:43
+Others##Hospital##Dentist Appointment##2021/11/11##2021/09/26 03:27:32
+Test##Quiz##Computer Architecture and Organization##2021/10/03##2021/09/26 03:28:27
