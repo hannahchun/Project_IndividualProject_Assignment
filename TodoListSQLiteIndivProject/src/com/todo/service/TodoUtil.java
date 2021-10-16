@@ -41,7 +41,7 @@ public class TodoUtil {
 			System.out.println("Item added~");
 		}
 	}
-
+	
 	public static void deleteItem(TodoList l) {
 		int no; //번호 입력
 		int val=0; //item 번호가 말이 되는지 확인용
@@ -126,7 +126,6 @@ public class TodoUtil {
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.print("\n" + "[Edit Item]\n" + "The item number to update > ");
-		
 		no = sc.nextInt();
 		
 		for(TodoItem item : l.getList()) {
@@ -204,12 +203,20 @@ public class TodoUtil {
 	
 	public static void KeyWordFindCate(TodoList l, String cate) {
 		int count=0;
-		for (TodoItem item : l.getListCategory(cate)) {
-			System.out.println(item.toString());
-			count++;
+		boolean val; //해당 키워드가 category로 있는지 확인용
+		val=l.isInCategory(cate);
+		
+		if(val==true) {
+			for (TodoItem item : l.getListCategory(cate)) {
+				System.out.println(item.toString());
+				count++;
+			}
+			System.out.println();
+			System.out.println("Found " + count + " item");
 		}
-		System.out.println();
-		System.out.println("Found " + count + " item");
+		else {
+			System.out.println("Found " + 0 + " item");
+		}
 	}
 	
 	public static void PrintCat(TodoList l) {
@@ -224,19 +231,32 @@ public class TodoUtil {
 	
 	public static void CompleteItem(TodoList l, int num) {
 		Scanner sc = new Scanner(System.in);
+		int val=0;
 		
-		for (TodoItem item : l.getList()) {
+		for(TodoItem item : l.getList()) {
 			if(item.getId()==num) {
-				item.setIs_completed(1);
-				System.out.print("Enter the actual time taken(Format:_hrs _mins) >");
-				String ac_time = sc.nextLine(); 
-				item.setAc_time(ac_time);
-				if(l.completeItem(item)>0) {
-					System.out.println();
-					System.out.println("Item marked completed~");
-				}
+				System.out.println(item.toString());
+				val=1;
 				break;
 			}
+		}
+		if (val==1) {
+			for (TodoItem item : l.getList()) {
+				if(item.getId()==num) {
+					item.setIs_completed(1);
+					System.out.print("Enter the actual time taken(Format:_hrs _mins) >");
+					String ac_time = sc.nextLine(); 
+					item.setAc_time(ac_time);
+					if(l.completeItem(item)>0) {
+						System.out.println();
+						System.out.println("Item marked completed~");
+					}
+					break;
+				}
+			}
+		}
+		else{
+			System.out.println("Invalid number!");
 		}
 	}
 	

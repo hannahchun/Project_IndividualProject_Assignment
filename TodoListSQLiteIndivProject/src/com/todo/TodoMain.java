@@ -13,7 +13,8 @@ public class TodoMain {
 		Scanner sc = new Scanner(System.in);
 		TodoList l = new TodoList();
 		boolean quit = false;
-		//l.importData("todolist.txt");
+		l.importCategory("todolist.txt");
+		l.importData("todolist.txt");
 		Menu.displaymenu();
 		
 		do {
