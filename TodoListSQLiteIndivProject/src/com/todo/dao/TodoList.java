@@ -28,9 +28,10 @@ public class TodoList {
 		
 		try {
 			boolean val;
+			//이미 category 테이블에 있는 category인지 확인
 			val=isInCategory(t.getCategory());
-			
-			if (val==false) { //카테고리가 category 테이블에 없음
+		
+			if (val==false) { //카테고리가 category 테이블에 없다면
 				String sql = "insert into category (name_cate)" + "values (?);";
 				pstmt=conn.prepareStatement(sql);
 				pstmt.setString(1, t.getCategory());
@@ -38,7 +39,7 @@ public class TodoList {
 				pstmt.close();
 			}
 			
-			//list에 카테고리 id 정보 추가 
+			//해당 카테고리의 id 정보를 불러와 
 			String sql2 = "SELECT * FROM category WHERE name_cate =?";
 			pstmt2= conn.prepareStatement(sql2); 
 			pstmt2.setString(1, t.getCategory());
@@ -89,10 +90,10 @@ public class TodoList {
 		int count=0;
 		try {
 			boolean val;
-			
+			//이미 category 테이블에 있는 category인지 확인
 			val=isInCategory(t.getCategory());
 			
-			if (val==false) { //카테고리가 category 테이블에 없음
+			if (val==false) { //카테고리가 category 테이블에 없다면
 				String sql = "insert into category (name_cate)" + "values (?);";
 				pstmt=conn.prepareStatement(sql);
 				pstmt.setString(1, t.getCategory());
@@ -100,7 +101,7 @@ public class TodoList {
 				pstmt.close();
 			}
 			
-			//list에 카테고리 id 정보 추가 
+			//해당 카테고리의 id 정보를 불러와 
 			String sql2 = "SELECT * FROM category WHERE name_cate =?";
 			pstmt2= conn.prepareStatement(sql2); 
 			pstmt2.setString(1, t.getCategory());
@@ -431,7 +432,7 @@ public class TodoList {
 			return false;
 	}
 	
-	//해당 키워드가 category 이름으로 있는지 확인
+	//이미 category 테이블에 있는 category인지 확인하는 메소드
 	public Boolean isInCategory(String check_word) {
 		ArrayList<String> cateList=getCategories();
 		
@@ -452,6 +453,23 @@ public class TodoList {
 		return null;
 	}
 	
+	public int AddEsTimeInfo(TodoItem item) {
+		String sql="update list set estimated_time=?" + "where id=?;";
+		PreparedStatement pstmt;
+		int count=0;
+		try {
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, item.getEs_time());
+			pstmt.setInt(2, item.getId());
+			count=pstmt.executeUpdate();
+			pstmt.close();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+
 	public void importData(String filename) {
 		PreparedStatement pstmt;
 		PreparedStatement pstmt2;
@@ -500,23 +518,6 @@ public class TodoList {
 		}
 	}
 	
-	public int AddEsTimeInfo(TodoItem item) {
-		String sql="update list set estimated_time=?" + "where id=?;";
-		PreparedStatement pstmt;
-		int count=0;
-		try {
-			pstmt=conn.prepareStatement(sql);
-			pstmt.setString(1, item.getEs_time());
-			pstmt.setInt(2, item.getId());
-			count=pstmt.executeUpdate();
-			pstmt.close();
-		}
-		catch(SQLException e) {
-			e.printStackTrace();
-		}
-		return count;
-	}
-
 	public void importCategory(String filename) {
 		Set<String> catHashSet = new HashSet<>();
 		PreparedStatement pstmt;

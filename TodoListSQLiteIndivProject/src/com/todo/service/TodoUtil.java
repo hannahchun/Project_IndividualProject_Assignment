@@ -203,7 +203,7 @@ public class TodoUtil {
 	
 	public static void KeyWordFindCate(TodoList l, String cate) {
 		int count=0;
-		boolean val; //해당 키워드가 category로 있는지 확인용
+		boolean val; //해당 키워드가 category로 있는지 확인
 		val=l.isInCategory(cate);
 		
 		if(val==true) {
