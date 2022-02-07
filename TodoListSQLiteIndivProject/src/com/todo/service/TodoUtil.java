@@ -7,329 +7,202 @@ import com.todo.dao.TodoList;
 
 public class TodoUtil {
 	
-	public static void createItem(TodoList l) {
+	public static void createItem(TodoList l) { 
 		
-		String title, desc, category, due_date, es_time;
+		String title, desc, category, date;
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.print("\n" + "[Create item]\n" + "Category > ");
+		category=sc.nextLine();
 		
-		category = sc.next();
-		
-		System.out.print("Title >");
-		title = sc.next();
+		System.out.print("Title > ");
+		title = sc.nextLine();
 		if (l.isDuplicate(title)) {
 			System.out.println("Duplicate titles not allowed!");
 			return;
 		}
 		
 		System.out.print("Description >");
-		sc.nextLine();
 		desc = sc.nextLine();
 		
-		System.out.print("Due date >");
-		due_date = sc.next();
+		System.out.print("Due Date >");
+		date = sc.nextLine();
 		
-		sc.nextLine();
-		System.out.print("Estimated time taken(Format:_hrs _mins, if not decided: undecided) >");
-		es_time = sc.nextLine(); 
-		
-		TodoItem t = new TodoItem(category,title, desc, due_date, es_time);
-		t.setIs_completed(0);
-		System.out.println();
-		if(l.addItem(t)>0) {
-			System.out.println("Item added~");
-		}
+		TodoItem t = new TodoItem(title, desc, category, date);
+		if(l.addItem(t)>0)
+			System.out.println("\nItem added!");
 	}
 	
-	public static void deleteItem(TodoList l) {
-		int no; //번호 입력
-		int val=0; //item 번호가 말이 되는지 확인용
-		String yn; //yes or no 
-		
-		Scanner sc = new Scanner(System.in);
-		
-		System.out.print("\n" + "[Delete Item]\n" + "The item number to remove > ");
-		
-		no = sc.nextInt();
-		
-		for(TodoItem item : l.getList()) {
-			if(item.getId()==no) {
-				System.out.println(item.toString());
-				val=1;
-				break;
-			}
-		}
-		
-		if (val==1) {
-			System.out.print("Delete this item?(y/n) > ");
-			yn=sc.next();
-			
-			if(yn.equals("y")) {
-				if(l.deleteItem(no)>0) {
-					System.out.println();
-					System.out.println("Item Deleted~");
-				}
-			}
-		}
-		
-		else {
-			System.out.println("Invalid number!");
-			return;
-		}
-	}
-	
-	public static void multiDeleteItem(TodoList l) {
+	public static void deleteItem(TodoList l) { 
 		String[] nums; //번호 입력
-		int val=0; //item 번호가 말이 되는지 확인용
-		String yn; //yes or no 
 		
 		Scanner sc = new Scanner(System.in);
 		
-		System.out.print("\n" + "[Delete Multiple Items]\n" + "The item numbers to remove (format:_,_) > ");
-		
+		System.out.print("\n" + "[Delete Item]\n" + "Number of the item to remove > ");
 		nums = sc.nextLine().split(",");
 		
-		for(String n: nums) {
-			val=0;
-			for(TodoItem item : l.getList()) {
-				if(Integer.parseInt(n)==item.getId()) {
-					val=1;
-				}
-			}
-			if(val==0) {
-				System.out.println(n + " is an invalid number");
+		for(String n : nums) {
+			TodoItem item = l.getItem(Integer.parseInt(n));
+			if(item==null) {
+				System.out.println("Non-existing item!");
 				return;
 			}
+			System.out.println(item.toString());
 		}
 		
-		System.out.print("Delete these items?(y/n) > ");
-		yn=sc.next();
-		int len=nums.length;
+		String des; //decision
 		int cnt=0;
+		int len=nums.length;
 		
-		if(yn.equals("y")) {
-			for(String n: nums) {
+		System.out.print("Delete item? (y/n)");
+		des=sc.next(); 
+		if(des.equals("y")) {
+			for(String n : nums)
 				cnt+=l.deleteItem(Integer.parseInt(n));
-			}
-			if(cnt==len) {
-				System.out.println();
-				System.out.println("All items Deleted~");
-			}
+			if(cnt==len)
+				System.out.println("\nItem deleted!");
 		}
 	}
 	
-	public static void updateItem(TodoList l) {
-		int no; //수정할 item 번호 입력
-		int val=0; //item 번호가 말이 되는지 확인용
-		String new_title, new_category, new_desc, new_due_date, new_es_time; //새 카테고리, 설명, 마감일자, 예상 시간
+	public static void updateItem(TodoList l) { 
+		int index;
 		Scanner sc = new Scanner(System.in);
 		
-		System.out.print("\n" + "[Edit Item]\n" + "The item number to update > ");
-		no = sc.nextInt();
+		System.out.print("\n" + "[Edit Item]\n" + "Number of the item to update > ");
+		index = sc.nextInt();
 		
-		for(TodoItem item : l.getList()) {
-			if(item.getId()==no) {
-				System.out.println(item.toString());
-				val=1;
-				break;
-			}
-		}
-		
-		if (val==1) {
-			System.out.print("Title of the new item > ");
-			new_title = sc.next().trim();
-			if (l.isDuplicate(new_title)) {
-				System.out.println("Existing title!");
-				return;
-			}
-		
-			System.out.print("New Category > ");
-			sc.nextLine();
-			new_category = sc.next();
-		
-			System.out.print("New Description > ");
-			sc.nextLine();
-			new_desc = sc.nextLine().trim();
-		
-			System.out.print("New Due date >");
-			new_due_date = sc.next();
-			
-			sc.nextLine();
-			System.out.print("Estimated time taken(Format:_hrs _mins, if not decided: undecided) >");
-			new_es_time = sc.nextLine(); 
-			
-			TodoItem t = new TodoItem(new_category, new_title, new_desc, new_due_date, new_es_time);
-			t.setId(no);
-			t.setIs_completed(0);
-			if(l.updateItem(t)>0) {
-				System.out.println();
-				System.out.println("Item updated~");
-			}
-		}
-		
-		else {
-			System.out.println("Invalid number!");
+		if(l.getItem(index)==null) {
+			System.out.println("Non-existing item!");
 			return;
 		}
+		
+		sc.nextLine();
+		System.out.print("Title of the new item > ");
+		String new_title = sc.nextLine();
+		
+		if (l.isDuplicate(new_title)) {
+			System.out.println("Existing title!");
+			return;
+		} 
+		
+		System.out.print("Category of the new item > ");
+		String new_category = sc.nextLine();
+		
+		System.out.print("Description of the new item > ");
+		String new_desc = sc.nextLine();
+		
+		System.out.print("Due date of the new item > ");
+		String new_due_date = sc.nextLine();
+		
+		TodoItem t = new TodoItem(new_title, new_desc, new_category, new_due_date);
+		t.setId(index);
+		
+		if(l.updateItem(t)>0)
+			System.out.println("\nThe item is updated!");
+		
 	}
 
-	public static void listAll(TodoList l) {
-		int num=l.getCount();
-		System.out.println("\n[Item List] , " + num + " items\n");
-		for (TodoItem item : l.getList()) {
+	public static void listAll(TodoList l) { 
+		System.out.print("[Item List, ");
+		System.out.println("a total of " + l.getCount() + " items]");
+		for (TodoItem item : l.getList())
 			System.out.println(item.toString());
-		}
 	}
 	
-	public static void listAll(TodoList l, String orderby, int ordering) {
-		int num=l.getCount();
-		System.out.println("\n[Item List] , " + num + " items\n");
-		for(TodoItem item : l.getOrderedList(orderby, ordering)) {
+	public static void listAll(TodoList l, String orderby, int ordering) { 
+		System.out.print("[Item List, ");
+		System.out.println("a total of " + l.getCount() + " items]");
+		for(TodoItem item : l.getOrderedList(orderby, ordering))
 			System.out.println(item.toString());
-		}
-	} 
+	}
 	
-	public static void KeyWordFind(TodoList l, String keyword) {
-		int count=0;
+	public static void findList(TodoList l, String keyword) { 
+		int cnt=0;
 		for (TodoItem item : l.getList(keyword)) {
 			System.out.println(item.toString());
-			count++;
+			cnt++;
 		}
-		System.out.println();
-		System.out.println("Found " + count + " item");
-
+		System.out.println("\nFound a total of " + cnt + " items");
 	}
 	
-	public static void KeyWordFindCate(TodoList l, String cate) {
-		int count=0;
-		boolean val; //해당 키워드가 category로 있는지 확인
-		val=l.isInCategory(cate);
-		
-		if(val==true) {
-			for (TodoItem item : l.getListCategory(cate)) {
-				System.out.println(item.toString());
-				count++;
-			}
-			System.out.println();
-			System.out.println("Found " + count + " item");
+	public static void findCateList(TodoList l, String keyword) { 
+		int cnt=0;
+		for (TodoItem item : l.getListCategory(keyword)) {
+			System.out.println(item.toString());
+			cnt++;
 		}
-		else {
-			System.out.println("Found " + 0 + " item");
-		}
+		System.out.println("\nFound a total of " + cnt + " items");
 	}
 	
-	public static void PrintCat(TodoList l) {
-		int count=0;
+	public static void listCateAll(TodoList l) { 
+		int cnt=0;
 		for(String item : l.getCategories()) {
 			System.out.print(item + " ");
-			count++;
+			cnt++;
 		}
-		System.out.println();
-		System.out.println("A total of " + count + " categories"); 
+		System.out.println("\n\nFound a total of " + cnt + " categories");
 	}
 	
-	public static void CompleteItem(TodoList l, int num) {
-		Scanner sc = new Scanner(System.in);
-		int val=0;
-		
-		for(TodoItem item : l.getList()) {
-			if(item.getId()==num) {
-				System.out.println(item.toString());
-				val=1;
-				break;
-			}
-		}
-		if (val==1) {
-			for (TodoItem item : l.getList()) {
-				if(item.getId()==num) {
-					item.setIs_completed(1);
-					System.out.print("Enter the actual time taken(Format:_hrs _mins) >");
-					String ac_time = sc.nextLine(); 
-					item.setAc_time(ac_time);
-					if(l.completeItem(item)>0) {
-						System.out.println();
-						System.out.println("Item marked completed~");
-					}
-					break;
-				}
-			}
-		}
-		else{
-			System.out.println("Invalid number!");
-		}
-	}
-	
-	public static void multiCompleteItem(TodoList l, String[] nums) {
-		Scanner sc = new Scanner(System.in);
-		
-		int val=0;
-		
-		for(String n: nums) {
-			val=0;
-			for(TodoItem item : l.getList()) {
-				if(Integer.parseInt(n)==item.getId()) {
-					val=1;
-				}
-			}
-			if(val==0) {
-				System.out.println(n + " is an invalid number");
-				return;
-			}
-		}
-		
-		int len=nums.length;
-		int cnt=0;
+	public static void completeItem(TodoList l, String keyword) {
+		String[] nums;
+		nums=keyword.split(",");
 		
 		for(String n : nums) {
-			for (TodoItem item : l.getList()) {
-				if(Integer.parseInt(n)==item.getId()) {
-					item.setIs_completed(1);
-					System.out.print("Enter the actual time taken (Format:_hrs _mins) to finish " + "(item - id " + n + ") >");
-					String ac_time = sc.nextLine(); 
-					item.setAc_time(ac_time);
-					cnt+=l.completeItem(item);
-				}
+			TodoItem item = l.getItem(Integer.parseInt(n));
+			if(item==null) {
+				System.out.println("Non-existing item!");
+				return;
 			}
-			if(cnt==len) {
-				System.out.println();
-				System.out.println("All items marked completed~");
-			}
+			System.out.println(item.toString());
 		}
+		
+		Scanner sc = new Scanner(System.in);
+		
+		int cnt=0;
+		int len=nums.length;
+		
+		for(String n : nums) {
+			System.out.print("Enter the actual time taken(Format:_hrs _mins) >");
+			String ac_time = sc.nextLine(); 
+			cnt+=l.completeItem(Integer.parseInt(n), ac_time);
+		}
+		if(cnt==len)
+			System.out.println("\nItem marked completed!");
 	}
 	
-	public static void PrintCompletedItem(TodoList l) {
-		int count=0;
-		for (TodoItem item : l.getListCompleted()) {
+	public static void listAll(TodoList l, int comp) { 
+		int cnt=0;
+		for(TodoItem item : l.getList(comp)) {
 			System.out.println(item.toString());
-			count++;
+			cnt++;
 		}
-		System.out.println();
-		System.out.println("Found " + count + " items");
+		System.out.println("\nA total of " + cnt + " items are completed!");
 	}
 
 	public static void AddEstimatedTimeInfo(TodoList l) {
-		int no; //번호 입력
+		int idx;
 		Scanner sc = new Scanner(System.in);
 		
 		System.out.print("\n" + "[Estimated Time Info]\n" + "The item number to add estimated time information > ");
 		
-		no = sc.nextInt();
+		idx = sc.nextInt();
 		
-		sc.nextLine(); 	
-		for (TodoItem item : l.getList()) {
-			if(item.getId()==no) {
-				System.out.print("Estimated time taken(Format:_hrs _mins, if not decided: undecided) >");
-				String es_time = sc.nextLine(); 
-				item.setEs_time(es_time);
-				if(l.AddEsTimeInfo(item)>0) {
-					System.out.println();
-					System.out.println("Estimated time information updated~");
-				}
+		if(l.getItem(idx)==null) {
+			System.out.println("Non-existing item!");
+			return;
+		}
+		
+		sc.nextLine();
+		for(TodoItem item : l.getList()) {
+			if(item.getId()==idx) {
+				System.out.print("Estimated time taken(if not decided: undecided) >");
+				String es_time = sc.nextLine();
+				item.setEstimate(es_time);
+				if(l.addEsTimeInfo(item)>0) 
+					System.out.println("\nEstimated time information updated~");
 				break;
 			}
 		}
 	}
 
-	
 }
